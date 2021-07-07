@@ -7,7 +7,7 @@ class TeacherTestCase(TestCase):
         s = Student.objects.create(username="student1", password="student", first_name="student")
         Teacher.objects.create(username="teacher1", password="teacher", first_name="teacher")
 
-        g = Gradeable(name="homework1", student=s)
+        g = Gradeable(name="homework1", student=s.id)
         g.document = SimpleUploadedFile(
             "best_file_eva.txt",
             b"these are the file contents!"
@@ -24,8 +24,7 @@ class TeacherTestCase(TestCase):
     
     def test_student_create_gradeable(self):
         g = Gradeable(name="homework1")
-        g.student = Student.objects.get(username="student1")
-        
+        g.student = 1
         g.document = SimpleUploadedFile(
             "best_file_eva.txt",
             b"these are the file contents!"
@@ -35,7 +34,7 @@ class TeacherTestCase(TestCase):
     
     def test_student_get_grades(self):
         s = Student.objects.get(username="student1")
-        g = Gradeable.objects.filter(student_id=s.id)
+        g = Gradeable.objects.filter(student=s.id)
 
         self.assertEqual(len(g), 1)
 
