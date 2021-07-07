@@ -23,7 +23,6 @@ class TeacherTestCase(TestCase):
         self.assertEqual(student.get_full_name(), "student")
     
     def test_student_create_gradeable(self):
-        
         g = Gradeable(name="homework1")
         g.student = Student.objects.get(username="student1")
         g.document = SimpleUploadedFile(
@@ -35,7 +34,17 @@ class TeacherTestCase(TestCase):
     
     def test_student_get_grades(self):
         s = Student.objects.get(username="student1")
-        
         g = Gradeable.objects.filter(student_id=s.id)
 
         self.assertEqual(len(g), 1)
+
+    def test_teacher_get_gradeables(self):
+        g = Gradeable.objects.filter(name="homework1")
+        self.assertEqual(len(g), 1)
+
+    def test_teacher_post_grade(self):
+        g = Gradeable.objects.get(name="homework1")
+        g.grade = "A"
+        g.notes = "Some notes !!"
+        g.save()
+        self.assertEqual(g.grade, "A")
