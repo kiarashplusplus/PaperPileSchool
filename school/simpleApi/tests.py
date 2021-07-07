@@ -25,6 +25,7 @@ class TeacherTestCase(TestCase):
     def test_student_create_gradeable(self):
         g = Gradeable(name="homework1")
         g.student = Student.objects.get(username="student1")
+        
         g.document = SimpleUploadedFile(
             "best_file_eva.txt",
             b"these are the file contents!"

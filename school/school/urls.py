@@ -14,8 +14,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from simpleApi.views import home, student_create_gradeable, student_get_grades
 
 urlpatterns = [
+    path('', home, name='home'),
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('student/', student_get_grades, name='student_get_grades'),
+    path('upload/', student_create_gradeable, name='student_create_gradeable'),
 ]

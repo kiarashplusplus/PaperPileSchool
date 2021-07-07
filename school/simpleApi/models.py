@@ -13,7 +13,7 @@ class Student(User):
 class Gradeable(models.Model):
     id = models.AutoField(name="gradeable_id", primary_key=True)
     name = models.CharField(max_length=100)
-    student = models.ForeignKey(Student, related_name="Student" ,on_delete=models.CASCADE)
+    student = models.IntegerField()
     submission_datetime = models.DateTimeField(auto_now_add=True)
     grading_datetime = models.DateTimeField(null=True, blank=True)
     document = models.FileField(upload_to='uploads/%Y/%m/%d/')
