@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponseNotAllowed
 from django.shortcuts import render
+from django.views.decorators.http import require_POST
 from django.views.generic.edit import CreateView
 import datetime
 from .models import Gradeable, Student, Teacher
@@ -46,8 +47,7 @@ def student_get_grades(request):
         return JsonResponse(data={'status': 'Success', 'errors': '',
                             'grades': grades_list})
     except ObjectDoesNotExist:
-        return HttpResponseNotAllowed('Student with this id is not found.'
-                )
+        return HttpResponseNotAllowed('Student with this id is not found.' )
 
     return JsonResponse(data={'status': 'Fail', 'errors': ''})
 
@@ -62,7 +62,20 @@ def teacher_get_gradeables(request):
         return JsonResponse(data={'status': 'Success', 'errors': '',
                             'grades': g_list})
     except ObjectDoesNotExist:
-        return HttpResponseNotAllowed('Teacher with this id is not found.'
-                )
+        return HttpResponseNotAllowed('Teacher with this id is not found.')
 
     return JsonResponse(data={'status': 'Fail', 'errors': ''})
+
+
+@require_POST
+def teacher_post_grade(request):
+    try:
+        data = json.loads(request.body)
+        if data['gid'] and data['final_grade'] in ['A', 'B', 'C', 'D', 'F', 'incomplete']:
+            gradeable = Gradeable.objects.get(id=data['gid'])
+            gradeable.grade = data['final_grade'] 
+            gradeable.teacher_notes = data.get('comments', "")
+            gradeable.save()
+    except Exception as e:
+        return HttpResponseNotAllowed('Bad format.')
+    return JsonResponse({'status': "Success"})
